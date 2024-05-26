@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>UУпралвение пользователями</title>
+
+    <!--JQUERY-->
+    <script
+            crossorigin="anonymous"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script
+            crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+    <!-- Fontawesome Solid Icons-->
+    <link href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css"
+          rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+
+    <!-- Our css-->
+    <link rel="stylesheet" th:href="@{/css/user-form.css}"
+          type="text/css">
+
+    <!-- DATA TABLE -->
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Make sure that the id you gave to the table is equal to the text after the # symbol
+            $('#userList').DataTable();
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="mx-auto col-sm-8 main-section" id="myTab" role="tablist">
+        <ul class="nav nav-tabs justify-content-end">
+            <li class="nav-item">
+                <a aria-controls="list" aria-selected="false" class="nav-link " data-toggle="tab" href="#list"
+                   id="list-tab" role="tab" th:classappend=" ${listTab}">список</a>
+            </li>
+            <li class="nav-item">
+                <a aria-controls="form" aria-selected="true" class="nav-link" data-toggle="tab" href="#form"
+                   id="form-tab" role="tab" th:classappend=" ${formTab}">форма</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" th:href="@{/logout}"><span
+                        th:text="${#authentication.getPrincipal().getUsername()}"></span> - <span>выход  </span><span
+                        class="float-right"><i class="fas fa-sign-out-alt"></i></span></a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div aria-labelledby="list-tab" class="tab-pane fade show" id="list" role="tabpanel"
+                 th:classappend=" ${listTab}">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Список пользователей</h4>
+                    </div>
+                    <div class="card-body">
+                        <div th:include="user-form/user-list.html" th:remove="tag"></div>
+                    </div>
+                </div>
+            </div>
+            <div aria-labelledby="form-tab" class="tab-pane fade show" id="form" role="tabpanel"
+                 th:classappend=" ${formTab}">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Информация пользователей</h4>
+                    </div>
+                    <div class="card-body">
+                        <div th:include="user-form/user-form.html" th:remove="tag"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container"style="width:800px; margin:0 auto;background-color: #d1d3d6;">
+<div th:if="${editMode}" th:include="user-form/change-password.html" th:remove="tag" class="itemform" style="width:800px; margin:0 auto;background-color: #D6EEEE;"></div>
+<div th:include="user-form/confirm-delete-dialog.html" th:remove="tag"></div>
+<table  border="1" >
+    <tr>
+        <th>Идентефикатор  </th>
+        <th>Название предмета</th>
+        <th>идентефикатор RFID метки</th>
+        <th>Ответственный</th>
+        <th>Время изменения</th>
+        <th>Статус</th>
+
+    </tr>
+    <tr
+            th:each="item, iStat : ${items}"
+            th:style="${iStat.odd}? 'font-weight: bold;'"
+            th:alt-title="${iStat.even}? 'even' : 'odd'">
+        <td th:text="${item.id}">ид</td>
+        <td th:text="${item.itemname}">имя </td>
+        <td th:text="${item.rfidId}">RFID код</td>
+        <td th:text="${item.dbUsers}">Ответственный</td>
+        <td th:text="${item.editedAt}">Время изменения</td>
+        <td th:text="${item.jvOwner}">владелец</td>
+        <td th:text="${item.status}">status</td>
+        
+
+    </tr>
+</table>
+<h1>Item editor</h1>
+    <form action="#" th:action="@{/items/showItems/edit}" method="post" th:object="${edititem}" class="itemedit" style="width:800px; margin:0 auto;background-color: #d1d3d6;">
+        <label>ID</label>
+        <input type="text" th:field="*{id}" /><br/>
+
+        <label>itemname</label>
+        <input type="text" th:field="*{itemname}" /><br/>
+         <label>Ответственный</label>
+        <input type="text" th:field="*{dbUsers}" /><br/>
+         <label>статус</label>
+        <input type="text" th:field="*{status}" /><br/>
+        <label>editedAt</label>
+        <input type="text" th:field="*{editedAt}" /><br/>
+        <label>RFID идентефикатор</label>
+        <input type="text" th:field="*{rfidId}" /><br/>
+   <!--   <label>owner</label>
+        <input type="text" th:field="*{owner}" /><br/>
+  -->
+
+        <button type="submit"  value="Update">обновить</button>    
+    </form>
+    </div>
+</body>
+</html>

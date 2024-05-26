@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style th:inline="text">
+body{
+    background: url([[@{/img/background.jpg}]])
+                no-repeat center center fixed;
+}
+</style>
+<body>
+<p style="background-image: url('/img/background.jpg');">
+<table  border="1" >
+    <tr>
+        <th>1 </th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+
+    </tr>
+    <tr
+            th:each="item, iStat : ${items}"
+            th:style="${iStat.odd}? 'font-weight: bold;'"
+            th:alt-title="${iStat.even}? 'even' : 'odd'">
+        <td th:text="${item.id}">ид</td>
+        <td th:text="${item.itemname}">имя </td>
+        <td th:text="${item.rfidId}">RFID код</td>
+        <td th:text="${item.status}">status</td>
+
+    </tr>
+</table>
+<h1>Item editor</h1>
+    <form action="#" th:action="@{/items/showItems/edit}" method="post" th:object="${edititem}">
+        <label>ID</label>
+        <input type="text" th:field="*{id}" /><br/>
+
+        <label>itemname</label>
+        <input type="text" th:field="*{itemname}" /><br/>
+   <!--   <label>owner</label>
+        <input type="text" th:field="*{owner}" /><br/>
+  -->
+
+        <button type="submit"  value="Update">update</button>    
+    </form>
+</body>
+</html>
